@@ -73,11 +73,7 @@ BEGIN {
             'templatemap'     => 'MT::TemplateMap',
             'banlist'         => 'MT::IPBanList',
             'ipbanlist'       => 'MT::IPBanList',
-            'tbping'          => 'MT::TBPing',
-            'ping'            => 'MT::TBPing',
-            'ping_cat'        => 'MT::TBPing',
             'log'             => 'MT::Log',
-            'log.ping'        => 'MT::Log::TBPing',
             'log.entry'       => 'MT::Log::Entry',
             'log.comment'     => 'MT::Log::Comment',
             'log.system'      => 'MT::Log',
@@ -89,7 +85,6 @@ BEGIN {
             'placement'       => 'MT::Placement',
             'plugindata'      => 'MT::PluginData',
             'session'         => 'MT::Session',
-            'trackback'       => 'MT::Trackback',
             'config'          => 'MT::Config',
             'objecttag'       => 'MT::ObjectTag',
             'objectscore'     => 'MT::ObjectScore',
@@ -306,13 +301,6 @@ BEGIN {
             'MailTransfer'      => { default => 'sendmail' },
             'SMTPServer'        => { default => 'localhost', },
             'DebugEmailAddress' => undef,
-            'WeblogsPingURL' => { default => 'http://rpc.weblogs.com/RPC2', },
-            'BlogsPingURL'   => { default => 'http://ping.blo.gs/', },
-            'MTPingURL' => { default => 'http://www.movabletype.org/update/', },
-            'TechnoratiPingURL' =>
-              { default => 'http://rpc.technorati.com/rpc/ping', },
-            'GooglePingURL' =>
-              { default => 'http://blogsearch.google.com/ping/RPC2', },
             'CGIMaxUpload'          => { default => 20_480_000 },
             'DBUmask'               => { default => '0111', },
             'HTMLUmask'             => { default => '0111', },
@@ -331,13 +319,9 @@ BEGIN {
             'NoPlacementCache'      => { default => 0, },
             'NoPublishMeansDraft'   => { default => 0, },
             'IgnoreISOTimezones'    => { default => 0, },
-            'PingTimeout'           => { default => 60, },
             'HTTPTimeout'           => { default => 60 },
-            'PingInterface'         => undef,
             'HTTPInterface'         => undef,
-            'PingProxy'             => undef,
             'HTTPProxy'             => undef,
-            'PingNoProxy'           => { default => 'localhost', },
             'HTTPNoProxy'           => { default => 'localhost', },
             'ImageDriver'           => { default => 'ImageMagick', },
             'NetPBMPath'            => undef,
@@ -405,8 +389,6 @@ BEGIN {
             'SearchCacheTTL'        => { default => 20, },
             'SearchThrottleSeconds' => { default => 5 },
             'SearchThrottleIPWhitelist' => undef,
-            'OneHourMaxPings'           => { default => 10, },
-            'OneDayMaxPings'            => { default => 50, },
             'SupportURL'                => {
                 default => 'http://www.sixapart.com/movabletype/support/',
             },
@@ -440,7 +422,6 @@ BEGIN {
             'DebugMode'             => { default => 0, },
             'ShowIPInformation'     => { default => 0, },
             'AllowComments'         => { default => 1, },
-            'AllowPings'            => { default => 1, },
             'HelpURL'               => undef,
             #'HelpURL'               => {
             #    default => 'http://www.sixapart.com/movabletype/docs/4.0/',
@@ -513,7 +494,6 @@ BEGIN {
             'NwcSmartReplace' => { default => 0, },
             'NwcReplaceField' =>
               { default => 'title,text,text_more,keywords,excerpt,tags', },
-            'DisableNotificationPings'   => { default => 0 },
             'SyncTarget' => { type => 'ARRAY' },
             'RsyncOptions' => undef,
             'UserpicAllowRect' => { default => 0 },
@@ -602,20 +582,6 @@ BEGIN {
             'archetype' => {
                 label => 'Movable Type Default',
                 template => 'archetype_editor.tmpl',
-            },
-        },
-        ping_servers  => {
-            'weblogs' => {
-                label => 'weblogs.com',
-                url   => 'http://rpc.weblogs.com/RPC2',
-            },
-            'technorati' => {
-                label => 'technorati.com',
-                url   => 'http://rpc.technorati.com/rpc/ping',
-            },
-            'google' => {
-                label => 'google.com',
-                url   => 'http://blogsearch.google.com/ping/RPC2',
             },
         },
         commenter_authenticators => \&load_core_commenter_auth,
