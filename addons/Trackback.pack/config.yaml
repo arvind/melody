@@ -1,3 +1,4 @@
+id: Trackback
 label: Trackbacks
 version: 1.0
 schema_version: 1.0
@@ -10,22 +11,6 @@ object_types:
     trackback: MT::Trackback
     
 config_settings:
-    WeblogsPingURL:
-        default: http://rpc.weblogs.com/RPC2
-    BlogsPingURL:
-        default: http://ping.blo.gs/
-    MTPingURL:
-        default: http://www.movabletype.org/update/
-    TechnoratiPingURL:
-        default: http://rpc.technorati.com/rpc/ping
-    GooglePingURL:
-        default: http://blogsearch.google.com/ping/RPC2
-    PingTimeout:
-        default: 60
-    PingInterface: ~
-    PingProxy: ~
-    PingNoProxy:
-        default: localhost
     OneHourMaxPings:
         default: 10
     OneDayMaxPings: 
@@ -35,14 +20,112 @@ config_settings:
     DisableNotificationPings:
         default: 0
     
-ping_servers:
-    weblogs:
-        label: weblogs.com,
-        url: http://rpc.weblogs.com/RPC2
-    technorati:
-        label: technorati.com
-        url: http://rpc.technorati.com/rpc/ping
-    google:
-        label: google.com
-        url: http://blogsearch.google.com/ping/RPC2
+applications:
+    cms:
+        methods:
+            list_ping: $Trackback::MT::CMS::TrackBack::list
+            ping: $Trackback::MT::CMS::Entry::send_pings
+            pinged_urls: $Trackback::MT::CMS::Entry::pinged_urls
+            cfg_trackbacks: $Trackback::MT::CMS::TrackBack::cfg_trackbacks
+            
+            ## DEPRECATED
+            list_pings: $Trackback::MT::CMS::TrackBack::list
+            
+            list_actions:
+                ping:
+                    unapprove_ping:
+                        label: Unpublish TrackBack(s)
+                        order: 100
+                        code: $Trackback::MT::CMS::Comment::unapprove_item
+                        permission: edit_all_posts,manage_feedback,publish_post
 
+            list_filters:
+                pin:
+                    default:
+                        label: Non-spam TrackBacks
+                        order: 100
+                        handler: >
+                            sub {
+                                my ( $terms, $args ) = @_;
+                                require MT::TBPing;
+                                $terms->{junk_status} = MT::TBPing::NOT_JUNK();
+                            }                        
+                    my_posts:
+                        label: TrackBacks on my entries
+                        order: 200
+                        handler: >
+                            sub {
+                                my ( $terms, $args ) = @_;
+                                require MT::Entry;
+                                my $app = MT->instance;
+                                require MT::TBPing;
+                                require MT::Trackback;
+                                $terms->{junk_status} = MT::TBPing::NOT_JUNK();
+                                $args->{join}         = MT::Trackback->join_on(
+                                    undef,
+                                    { id => \'= tbping_tb_id', },
+                                    {   join => MT::Entry->join_on(
+                                            undef,
+                                            {   id        => \'= trackback_entry_id',
+                                                author_id => $app->user->id
+                                            }
+                                        )
+                                    },
+                                );
+                            }
+                    published:
+                        label: Published TrackBacks
+                        order: 200
+                        handler: >
+                            sub {
+                                my ( $terms, $args ) = @_;
+                                $terms->{visible} = 1;
+                            }
+                    unpublished:
+                        label: Unpublished TrackBacks
+                        order: 300
+                        handler: >
+                            sub {
+                                my ( $terms, $args ) = @_;
+                                require MT::TBPing;
+                                $terms->{junk_status} = MT::TBPing::NOT_JUNK();
+                                $terms->{visible}     = 0;
+                            }
+                    spam:
+                        label: TrackBacks marked as Spam
+                        order: 400
+                        handler: >
+                            sub {
+                                my ( $terms, $args ) = @_;
+                                require MT::TBPing;
+                                $terms->{junk_status} = MT::TBPing::JUNK();
+                            }
+                    last_7_days:
+                        label: All TrackBacks in the last 7 days
+                        order: 700
+                        handler: >
+                            sub {
+                                my ( $terms, $args ) = @_;
+                                my $ts = time - 7 * 24 * 60 * 60;
+                                $ts = epoch2ts( MT->app->blog, $ts );
+                                $terms->{created_on} = [ $ts, undef ];
+                                $args->{range_incl}{created_on} = 1;
+                                $terms->{junk_status} = MT::TBPing::NOT_JUNK();
+                            }
+
+        menus:
+            manage:ping:
+                label: TrackBacks
+                mode: list_pings
+                order: 5000
+                permission: create_post,edit_all_posts,manage_feedback
+
+callbacks:
+    cms_edit.ping: $Trackback::MT::CMS::TrackBack::edit
+    cms_view_permission_filter.ping: $Trackback::MT::CMS::TrackBack::can_view
+    cms_save_permission_filter.ping: $Trackback::MT::CMS::TrackBack::can_save
+    cms_delete_permission_filter.ping: $Trackback::MT::CMS::TrackBack::can_delete
+    cms_pre_save.ping: $Trackback::MT::CMS::TrackBack::pre_save
+    cms_post_save.ping: $Trackback::MT::CMS::TrackBack::post_save
+    cms_post_delete.ping: $Trackback::MT::CMS::TrackBack::post_delete
+    

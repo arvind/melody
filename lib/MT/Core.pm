@@ -301,6 +301,13 @@ BEGIN {
             'MailTransfer'      => { default => 'sendmail' },
             'SMTPServer'        => { default => 'localhost', },
             'DebugEmailAddress' => undef,
+            'WeblogsPingURL' => { default => 'http://rpc.weblogs.com/RPC2', },
+            'BlogsPingURL'   => { default => 'http://ping.blo.gs/', },
+            'MTPingURL' => { default => 'http://www.movabletype.org/update/', },
+            'TechnoratiPingURL' =>
+              { default => 'http://rpc.technorati.com/rpc/ping', },
+            'GooglePingURL' =>
+              { default => 'http://blogsearch.google.com/ping/RPC2', },
             'CGIMaxUpload'          => { default => 20_480_000 },
             'DBUmask'               => { default => '0111', },
             'HTMLUmask'             => { default => '0111', },
@@ -319,9 +326,13 @@ BEGIN {
             'NoPlacementCache'      => { default => 0, },
             'NoPublishMeansDraft'   => { default => 0, },
             'IgnoreISOTimezones'    => { default => 0, },
+            'PingTimeout'           => { default => 60, },
             'HTTPTimeout'           => { default => 60 },
+            'PingInterface'         => undef,
             'HTTPInterface'         => undef,
+            'PingProxy'             => undef,
             'HTTPProxy'             => undef,
+            'PingNoProxy'           => { default => 'localhost', },
             'HTTPNoProxy'           => { default => 'localhost', },
             'ImageDriver'           => { default => 'ImageMagick', },
             'NetPBMPath'            => undef,
@@ -582,6 +593,20 @@ BEGIN {
             'archetype' => {
                 label => 'Movable Type Default',
                 template => 'archetype_editor.tmpl',
+            },
+        },
+        ping_servers  => {
+            'weblogs' => {
+                label => 'weblogs.com',
+                url   => 'http://rpc.weblogs.com/RPC2',
+            },
+            'technorati' => {
+                label => 'technorati.com',
+                url   => 'http://rpc.technorati.com/rpc/ping',
+            },
+            'google' => {
+                label => 'google.com',
+                url   => 'http://blogsearch.google.com/ping/RPC2',
             },
         },
         commenter_authenticators => \&load_core_commenter_auth,
