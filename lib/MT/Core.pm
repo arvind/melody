@@ -533,7 +533,6 @@ BEGIN {
             'feeds'    => { handler => 'MT::App::ActivityFeeds', },
             'view'     => { handler => 'MT::App::Viewer', },
             'notify'   => { handler => 'MT::App::NotifyList', },
-            'tb'       => { handler => 'MT::App::Trackback', },
             'upgrade'  => { handler => 'MT::App::Upgrade', },
             'wizard'   => { handler => 'MT::App::Wizard', },
             'comments' => {

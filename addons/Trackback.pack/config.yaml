@@ -21,6 +21,9 @@ config_settings:
         default: 0
     
 applications:
+    tb:
+        handler: MT::App::Trackback
+
     cms:
         methods:
             list_ping: $Trackback::MT::CMS::TrackBack::list

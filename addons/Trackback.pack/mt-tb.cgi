@@ -7,5 +7,9 @@
 # $Id$
 
 use strict;
-use lib $ENV{MT_HOME} ? "$ENV{MT_HOME}/lib" : 'lib';
+BEGIN { 
+    unshift @INC, ($0 =~ m!(.*[/\\])! ? ( $1 . 'lib', $1 . '../../lib', $1 . '../../extlib' ) : ( 'lib', '../../lib', '../../extlib'));
+    $ENV{MT_HOME} = '../../';
+};
+
 use MT::Bootstrap App => 'MT::App::Trackback';
