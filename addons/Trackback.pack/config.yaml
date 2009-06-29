@@ -24,8 +24,6 @@ applications:
     cms:
         methods:
             list_ping: $Trackback::MT::CMS::TrackBack::list
-            ping: $Trackback::MT::CMS::Entry::send_pings
-            pinged_urls: $Trackback::MT::CMS::Entry::pinged_urls
             cfg_trackbacks: $Trackback::MT::CMS::TrackBack::cfg_trackbacks
             
             ## DEPRECATED
@@ -129,3 +127,39 @@ callbacks:
     cms_post_save.ping: $Trackback::MT::CMS::TrackBack::post_save
     cms_post_delete.ping: $Trackback::MT::CMS::TrackBack::post_delete
     
+tags:
+    block:
+        PingsHeader: $Core::MT::Template::Context::_hdlr_pass_tokens
+        PingsFooter: $Core::MT::Template::Context::_hdlr_pass_tokens
+        CategoryIfAllowPings?: $Trackback::MT::Template::Tags::Ping::_hdlr_category_allow_pings
+        Pings: $Trackback::MT::Template::Tags::Ping::_hdlr_pings
+        PingsSent: $Trackback::MT::Template::Tags::Ping::_hdlr_pings_sent
+        PingEntry: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_entry
+        IfPingsAllowed?: $Trackback::MT::Template::Tags::Ping::_hdlr_if_pings_allowed
+        IfPingsAccepted?: $Trackback::MT::Template::Tags::Ping::_hdlr_if_pings_accepted
+        IfPingsActive?: $Trackback::MT::Template::Tags::Ping::_hdlr_if_pings_active
+        IfPingsModerated?: $Trackback::MT::Template::Tags::Ping::_hdlr_if_pings_moderated
+        EntryIfAllowPings?: $Trackback::MT::Template::Tags::Ping::_hdlr_entry_if_allow_pings
+    function:
+        TrackbackScript: $Trackback::MT::Template::Tags::Ping_hdlr_trackback_script
+        BlogPingCount: $Trackback::MT::Template::Tags::Ping::_hdlr_blog_ping_count
+        EntryTrackbackCount: $Trackback::MT::Template::Tags::Ping::_hdlr_entry_ping_count
+        EntryTrackbackLink: $Trackback::MT::Template::Tags::Ping::_hdlr_entry_tb_link
+        EntryTrackbackData: $Trackback::MT::Template::Tags::Ping::_hdlr_entry_tb_data
+        EntryTrackbackID: $Trackback::MT::Template::Tags::Ping::_hdlr_entry_tb_id
+        PingsSentURL: $Trackback::MT::Template::Tags::Ping::_hdlr_pings_sent_url
+        PingTitle: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_title
+        PingID: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_id
+        PingURL: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_url
+        PingExcerpt: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_excerpt
+        PingBlogName: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_blog_name
+        PingIP: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_ip
+        PingDate: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_date
+        PingScore: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_score
+        PingScoreHigh: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_score_high
+        PingScoreLow: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_score_low
+        PingScoreAvg: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_score_avg
+        PingScoreCount: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_score_count
+        PingRank: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_rank
+        CategoryTrackbackLink: $Trackback::MT::Template::Tags::Ping_hdlr_category_tb_link
+        CategoryTrackbackCount: $Trackback::MT::Template::Tags::Ping_hdlr_category_tb_count
