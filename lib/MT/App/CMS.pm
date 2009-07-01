@@ -2962,8 +2962,6 @@ sub _build_category_list {
 
     if ($counts) {
         $app->model('placement');
-        $app->model('trackback');
-        $app->model('ping');
 
         my $max_cat_id = 0;
         foreach (@cats) {
@@ -2976,24 +2974,6 @@ sub _build_category_list {
             { group => ['category_id'] } );
         while ( my ( $count, $category_id ) = $cat_entry_count_iter->() ) {
             $placement_counts->{$category_id} = $count;
-        }
-
-        $tb_counts = {};
-        my $tb_count_iter
-            = MT::TBPing->count_group_by(
-            { blog_id => $blog_id, junk_status => MT::TBPing::NOT_JUNK() },
-            { group => ['tb_id'] } );
-        while ( my ( $count, $tb_id ) = $tb_count_iter->() ) {
-            $tb_counts->{$tb_id} = $count;
-        }
-        my $tb_iter = MT::Trackback->load_iter(
-            {   blog_id     => $blog_id,
-                category_id => [ 1, $max_cat_id ]
-            },
-            { range_incl => { 'category_id' => 1 } }
-        );
-        while ( my $tb = $tb_iter->() ) {
-            $tb{ $tb->category_id } = $tb;
         }
     }
 
@@ -3053,18 +3033,6 @@ sub _build_category_list {
                 = $placement_counts
                 ? ( $placement_counts->{ $obj->id } || 0 )
                 : MT::Placement->count( { category_id => $obj->id } );
-            if ( my $tb = $tb{ $obj->id } ) {
-                $row->{has_tb} = 1;
-                $row->{tb_id}  = $tb->id;
-                $row->{category_tbcount}
-                    = $tb_counts
-                    ? ( $tb_counts->{ $tb->id } || 0 )
-                    : MT::TBPing->count(
-                    {   tb_id       => $tb->id,
-                        junk_status => MT::TBPing::NOT_JUNK(),
-                    }
-                    );
-            }
         }
         $row->{category_is_expanded} = 1 if $expanded{ $obj->id };
         $row->{category_pixel_depth} = 10 * $depth;

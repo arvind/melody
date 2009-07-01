@@ -4,6 +4,21 @@ use strict;
 use MT::Util qw( format_ts relative_date encode_url encode_html );
 use MT::I18N qw( const break_up_text substr_text );
 
+sub init_app {
+    my $cb = shift;
+    my ($app, %param) = @_;
+    my $cmpnt = $app->component('Trackback');
+    
+    # Override MT::App::CMS::_build_category_list
+    {
+      local $SIG{__WARN__} = sub {  }; 
+      require MT::App::CMS;
+      $cmpnt->{_build_category_list} = \&MT::App::CMS::_build_category_list;
+      *MT::App::CMS::_build_category_list = \&_build_category_list;
+    }
+    
+}
+
 sub edit {
     my $cb = shift;
     my ($app, $id, $obj, $param) = @_;
@@ -713,6 +728,73 @@ sub build_ping_table {
     $param->{ping_table}[0]{object_type} = 'ping';
     $app->load_list_actions( 'ping', $param );
     \@data;
+}
+
+sub _build_category_list {
+    my $app = shift;
+    my (%param) = @_;
+    my $cmpnt = $app->component('Trackback');
+    
+    # First let MT::App::CMS build the category list
+    my $data = &{$cmpnt->{_build_category_list}}($app, %param);
+    
+    # Then add data about trackbacks
+    my $blog_id         = $param{blog_id};
+    my $counts          = $param{counts};
+    my $type            = $param{type};
+    my ( $tb_counts, %tb );
+    
+    my $class = $app->model($type) or return;
+    my @cats = $class->_flattened_category_hierarchy($blog_id);
+    
+    if($counts) {
+        $app->model('trackback');
+        $app->model('ping');
+        
+        my $max_cat_id = 0;
+        foreach (@cats) {
+            $max_cat_id = $_->id if ( ref $_ ) && ( $_->id > $max_cat_id );
+        }
+        
+        $tb_counts = {};
+        my $tb_count_iter
+            = MT::TBPing->count_group_by(
+            { blog_id => $blog_id, junk_status => MT::TBPing::NOT_JUNK() },
+            { group => ['tb_id'] } );
+        while ( my ( $count, $tb_id ) = $tb_count_iter->() ) {
+            $tb_counts->{$tb_id} = $count;
+        }
+        my $tb_iter = MT::Trackback->load_iter(
+            {   blog_id     => $blog_id,
+                category_id => [ 1, $max_cat_id ]
+            },
+            { range_incl => { 'category_id' => 1 } }
+        );
+        while ( my $tb = $tb_iter->() ) {
+            $tb{ $tb->category_id } = $tb;
+        }
+    }
+    
+    foreach my $row (@$data) {
+        my $obj = $class->load($row->{'category_id'});
+        
+        if ($counts) {
+            if ( my $tb = $tb{ $obj->id } ) {
+                $row->{has_tb} = 1;
+                $row->{tb_id}  = $tb->id;
+                $row->{category_tbcount}
+                    = $tb_counts
+                    ? ( $tb_counts->{ $tb->id } || 0 )
+                    : MT::TBPing->count(
+                    {   tb_id       => $tb->id,
+                        junk_status => MT::TBPing::NOT_JUNK(),
+                    }
+                    );
+            }
+        }
+    }
+    
+    $data;
 }
 
 1;

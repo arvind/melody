@@ -122,6 +122,7 @@ applications:
                 permission: create_post,edit_all_posts,manage_feedback
                 
         callbacks:
+            init_app: $Trackback::MT::CMS::TrackBack::init_app
             cms_edit.ping: $Trackback::MT::CMS::TrackBack::edit
             cms_view_permission_filter.ping: $Trackback::MT::CMS::TrackBack::can_view
             cms_save_permission_filter.ping: $Trackback::MT::CMS::TrackBack::can_save
