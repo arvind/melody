@@ -129,6 +129,7 @@ callbacks:
     cms_pre_save.ping: $Trackback::MT::CMS::TrackBack::pre_save
     cms_post_save.ping: $Trackback::MT::CMS::TrackBack::post_save
     cms_post_delete.ping: $Trackback::MT::CMS::TrackBack::post_delete
+    ActivityFeed.ping: $Trackback::MT::Trackback::ActivityFeeds::_feed_ping
     
 tags:
     block:
