@@ -121,6 +121,14 @@ applications:
                 order: 5000
                 permission: create_post,edit_all_posts,manage_feedback
                 
+            prefs:trackback: 
+                label: TrackBack
+                mode: cfg_trackbacks
+                order: 140
+                permission: administer_blog,edit_config,set_publish_paths
+                system_permission: administer
+                view: blog
+                
         callbacks:
             init_app: $Trackback::MT::CMS::TrackBack::init_app
             cms_edit.ping: $Trackback::MT::CMS::TrackBack::edit

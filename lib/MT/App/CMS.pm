@@ -1311,14 +1311,6 @@ sub core_menus {
             system_permission => 'administer',
             view              => "blog",
         },
-        'prefs:trackback' => {
-            label      => "TrackBack",
-            mode       => 'cfg_trackbacks',
-            order      => 140,
-            permission => 'administer_blog,edit_config,set_publish_paths',
-            system_permission => 'administer',
-            view              => "blog",
-        },
         'prefs:registration' => {
             label      => "Registration",
             mode       => 'cfg_registration',
