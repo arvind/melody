@@ -45,9 +45,6 @@ sub core_backup_instructions {
         'placement'     => {
             'order' => 510
         },
-        'trackback'     => {
-            'order' => 510
-        },
         'objecttag'     => {
             'order' => 510
         },
@@ -56,16 +53,6 @@ sub core_backup_instructions {
         },
         'objectasset'   => {
             'order' => 510
-        },
-        # Ping should be backed up after Trackback.
-        'tbping'        => {
-            'order' => 520
-        },
-        'ping'          =>  {
-            'order' => 520
-        },
-        'ping_cat'      => {
-            'order' => 520
         },
         # Comment should be backed up after TBPing
         # because saving a comment ultimately triggers

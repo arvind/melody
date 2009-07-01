@@ -167,3 +167,14 @@ tags:
         PingRank: $Trackback::MT::Template::Tags::Ping::_hdlr_ping_rank
         CategoryTrackbackLink: $Trackback::MT::Template::Tags::Ping_hdlr_category_tb_link
         CategoryTrackbackCount: $Trackback::MT::Template::Tags::Ping_hdlr_category_tb_count
+
+backup_instructions:
+    # Ping should be backed up after Trackback.
+    trackback:
+        order: 510
+    tbping:
+        order: 520
+    ping:
+        order: 520
+    ping_cat:
+        order: 520
